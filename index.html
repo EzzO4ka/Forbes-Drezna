@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forbes Дрезна — Рейтинг богатейших людей города</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Playfair Display for Forbes editorial luxury & Inter for modern UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600;1,700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            forbes: ['Cinzel', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            gold: {
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+              700: '#a16207',
+            },
+            forbesDark: '#0a0a0c',
+            forbesCard: '#131418',
+            forbesBorder: '#23252e'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0b0c10;
+      color: #e5e7eb;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #fef08a 0%, #eab308 50%, #ca8a04 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gold-border-glow {
+      box-shadow: 0 0 35px -5px rgba(234, 179, 8, 0.25);
+    }
+
+    .ticker-wrap {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .ticker-move {
+      display: inline-block;
+      animation: marquee 28s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+  </style>
+</head>
+<body class="bg-[#090a0f] text-slate-100 selection:bg-gold-500 selection:text-black min-h-screen flex flex-col justify-between">
+
+  <div class="border-b border-zinc-800 bg-[#0d0e14] text-xs font-mono text-zinc-400 py-2 px-4 ticker-wrap select-none">
+    <div class="ticker-move flex items-center gap-8">
+      <span><strong class="text-zinc-200">FORBES DREZNA INDEX:</strong> <span class="text-emerald-400 font-bold">▲ 14,892.40 (+4.8%)</span></span>
+      <span>• ДРЕЗНЕНСКАЯ ПРЯДИЛЬНО-ТКАЦКАЯ МОНОПОЛИЯ: <span class="text-emerald-400">▲ $4.2B</span></span>
+      <span>• ЭЛЕКТРИЧКА ДРЕЗНА — МОСКВА КУРСКАЯ: <span class="text-emerald-400">▲ БЕЗ ОПОЗДАНИЙ</span></span>
+      <span>• АЛЕКСЕЙ ЗАХАРОВ CAPITAL: <span class="text-gold-400 font-semibold">▲ RECORD HIGH $4.20B</span></span>
+      <span>• ШАУРМА НА ВОКЗАЛЬНОЙ CORP: <span class="text-emerald-400">▲ +12.3%</span></span>
+      <span>• КВАС ДРЕЗНЕНСКИЙ ФЬЮЧЕРСЫ: <span class="text-amber-400 font-bold">▲ +9.1%</span></span>
+      <span>• FORBES DREZNA 2026: ОФИЦИАЛЬНЫЙ СПИСОК МИЛЛИАРДЕРОВ МОСКОВСКОЙ ОБЛАСТИ</span>
+    </div>
+  </div>
+
+  <header class="border-b border-zinc-800/80 bg-[#090a0f]/90 sticky top-0 z-40 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-4 border-b border-zinc-800/50">
+        <div class="flex items-center space-x-3 text-xs uppercase tracking-widest text-zinc-400">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Московская область • Дрезна</span>
+          <span class="hidden sm:inline text-zinc-600">|</span>
+          <span class="hidden sm:inline text-zinc-400">Специальное издание 2026</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="openAddModal()" class="px-3.5 py-1.5 text-xs font-semibold rounded border border-gold-500/40 text-gold-400 hover:bg-gold-500/10 transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Предложить олигарха
+          </button>
+          <button onclick="shareRating()" class="px-3 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            Поделиться
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Forbes Header Brand -->
+      <div class="py-6 sm:py-8 text-center relative">
+        <h1 class="font-forbes text-5xl sm:text-7xl md:text-8xl tracking-wider font-extrabold uppercase text-white drop-shadow-md">
+          FORBES
+        </h1>
+        <div class="flex items-center justify-center gap-3 mt-1">
+          <div class="h-[1px] w-12 sm:w-24 bg-gradient-to-r from-transparent to-gold-500"></div>
+          <p class="font-serif tracking-[0.3em] uppercase text-xs sm:text-sm text-gold-400 font-bold">
+            Д Р Е З Н А &bull; С П И С О К &bull; Б О Г А Т Е Й Ш И Х
+          </p>
+          <div class="h-[1px] w-12 sm:w-24 bg-gradient-to-l from-transparent to-gold-500"></div>
+        </div>
+        <p class="text-xs text-zinc-400 mt-2 max-w-xl mx-auto italic font-serif">
+          «Ежегодный рейтинг персон, контролирующих экономику города, фабричные территории и стратегические запасы шаурмы на привокзальной площади»
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    
+    <!-- Hero Spotlight Section -->
+    <section class="mb-14 relative overflow-hidden rounded-2xl border border-gold-500/40 bg-gradient-to-b from-[#161722] via-[#0f1017] to-[#0a0a0e] gold-border-glow p-6 sm:p-10">
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- Top Badge -->
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div class="flex items-center gap-3">
+          <span class="bg-gradient-to-r from-gold-500 to-amber-600 text-black font-extrabold text-sm sm:text-base px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md">
+            № 1 В РЕЙТИНГЕ FORBES ДРЕЗНА
+          </span>
+          <span class="text-xs font-mono text-zinc-400 bg-zinc-800/80 px-3 py-1.5 rounded-full border border-zinc-700">
+            Официальный статус: ТИТАН ГОРОДА
+          </span>
+        </div>
+        <div class="text-right">
+          <span class="text-xs uppercase tracking-widest text-zinc-400 block">Динамика капитала</span>
+          <span class="text-emerald-400 font-mono font-bold text-sm">▲ +$820,000,000 (за 2026 г.)</span>
+        </div>
+      </div>
+
+      <!-- Hero Grid: Image and Description -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <!-- Photo Column -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="relative group w-full max-w-sm">
+            <div class="absolute -inset-1.5 bg-gradient-to-r from-gold-500 via-yellow-400 to-amber-600 rounded-2xl blur opacity-70 group-hover:opacity-100 transition duration-500"></div>
+            <div class="relative rounded-xl overflow-hidden border-2 border-gold-400/80 bg-zinc-950 shadow-2xl">
+              <!-- Direct repository image loader: 3170.png in the repository root -->
+              <div class="relative w-full aspect-[3/4] bg-zinc-900 flex items-center justify-center overflow-hidden">
+                <img 
+                  id="heroRealPhoto"
+                  src="3170.png" 
+                  alt="Алексей Захаров - №1 Forbes Дрезна" 
+                  class="forbes-portrait w-full h-full object-cover object-top z-10 transition-transform duration-700 group-hover:scale-105"
+                  loading="eager"
+                  onerror="handleImageError(this)"
+                >
+                <!-- Helper display if 3170.png is not yet committed next to index.html -->
+                <div id="photoPlaceholder" class="hidden absolute inset-0 flex-col items-center justify-center p-6 text-center bg-zinc-900 text-zinc-400">
+                  <svg class="w-12 h-12 text-gold-500 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  <p class="text-xs font-semibold text-zinc-200">Ожидается файл: <code class="text-gold-400 font-mono">3170.png</code></p>
+                  <p class="text-[11px] text-zinc-400 mt-1 max-w-xs">Поместите файл <code>3170.png</code> в корень репозитория рядом с <code>index.html</code></p>
+                  <label class="mt-3 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-gold-400 text-xs rounded-lg cursor-pointer transition">
+                    Выбрать 3170.png с диска
+                    <input type="file" accept="image/*" class="hidden" onchange="previewUploadedFile(this)">
+                  </label>
+                </div>
+              </div>
+
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/70 to-transparent p-4 text-center z-20">
+                <span class="text-xs tracking-widest font-mono uppercase text-gold-400">Дрезна • Орехово-Зуевский округ</span>
+                <p class="font-serif text-lg font-bold text-white tracking-wide">Алексей Захаров</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details Column -->
+        <div class="lg:col-span-7 space-y-6">
+          <div>
+            <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gold-400 mb-1">
+              <span>Лидер списка</span> &bull; <span>Основатель холдинга</span>
+            </div>
+            <h2 class="font-serif text-3xl sm:text-5xl font-black text-white leading-tight">
+              Алексей Захаров
+            </h2>
+            <p class="text-zinc-400 text-sm mt-1 font-mono">
+              34 года (или вечно молодой крипто-магнат) &bull; Резиденция: г. Дрезна, ул. Революции
+            </p>
+          </div>
+
+          <!-- Net Worth Box -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 rounded-xl bg-zinc-900/90 border border-zinc-800">
+            <div>
+              <span class="text-xs uppercase tracking-wider text-zinc-400 font-semibold block mb-1">Оценка состояния</span>
+              <div class="text-3xl sm:text-4xl font-black font-forbes gold-gradient-text">
+                $4,200,000,000
+              </div>
+              <span class="text-xs text-zinc-400 font-mono">~ 390.6 млрд рублей</span>
+            </div>
+            <div class="border-t sm:border-t-0 sm:border-l border-zinc-800 pt-3 sm:pt-0 sm:pl-4">
+              <span class="text-xs uppercase tracking-wider text-zinc-400 font-semibold block mb-1">Источник богатства</span>
+              <p class="text-sm font-medium text-zinc-200">
+                Zakharov Capital, Дрезненский High-Tech кластер, прядильно-ткацкие инновации, эксклюзивные концессии на железной дороге
+              </p>
+            </div>
+          </div>
+
+          <!-- Biography Highlight Quote -->
+          <div class="border-l-4 border-gold-500 pl-4 py-1 italic font-serif text-zinc-300 text-base">
+            «Кто контролирует расписание дрезненских электричек и поставку кофе к перрону — тот контролирует всю экономику Подмосковья.»
+            <span class="block text-xs font-sans not-italic text-zinc-400 mt-2">— Алексей Захаров в эксклюзивном интервью Forbes Дрезна</span>
+          </div>
+
+          <!-- Key Assets Badges -->
+          <div>
+            <h4 class="text-xs uppercase font-mono tracking-widest text-zinc-400 mb-2">Ключевые активы и влияние:</h4>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs bg-zinc-800/90 border border-zinc-700/80 text-zinc-300 px-3 py-1 rounded-full">
+                🏭 Прядильно-ткацкий смарт-технопарк 2.0 (100%)
+              </span>
+              <span class="text-xs bg-zinc-800/90 border border-zinc-700/80 text-zinc-300 px-3 py-1 rounded-full">
+                🚀 Drezna Space & Quantum Data Center (84%)
+              </span>
+              <span class="text-xs bg-zinc-800/90 border border-zinc-700/80 text-zinc-300 px-3 py-1 rounded-full">
+                ☕ Сеть элитных кофеен «Дрезненский Бариста» (65%)
+              </span>
+              <span class="text-xs bg-zinc-800/90 border border-zinc-700/80 text-zinc-300 px-3 py-1 rounded-full">
+                ⚡ Частная энергетическая сеть Орехово-Зуево (51%)
+              </span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap gap-3 pt-2">
+            <button onclick="openDossierModal()" class="px-6 py-2.5 bg-gradient-to-r from-gold-500 to-amber-600 hover:from-gold-400 hover:to-amber-500 text-black font-bold rounded-lg text-sm transition shadow-lg flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Открыть полное досье олигарха
+            </button>
+            <button onclick="calculateZakharovWealth()" class="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium rounded-lg text-sm transition border border-zinc-700 flex items-center gap-2">
+              <svg class="w-4 h-4 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+              Что можно купить на состояние Алексея?
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-gold-500 font-bold block mb-1">Полная таблица</span>
+          <h3 class="font-serif text-2xl sm:text-3xl font-bold text-white">Топ-10 богатейших жителей Дрезны</h3>
+          <p class="text-zinc-400 text-xs sm:text-sm">Рейтинг верифицирован аналитической комиссией Орехово-Зуевского района</p>
+        </div>
+
+        <!-- Filter / Search input -->
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <input 
+              id="searchInput" 
+              type="text" 
+              placeholder="Поиск по имени или активу..." 
+              oninput="filterTable()" 
+              class="w-64 bg-zinc-900 border border-zinc-700 text-xs text-white rounded-lg px-3 py-2 pl-9 focus:outline-none focus:border-gold-500"
+            >
+            <svg class="w-4 h-4 text-zinc-500 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="overflow-x-auto rounded-xl border border-zinc-800 bg-[#101116] shadow-xl">
+        <table class="w-full text-left border-collapse" id="rankingsTable">
+          <thead>
+            <tr class="border-b border-zinc-800 bg-zinc-900/60 text-zinc-400 text-xs uppercase tracking-wider font-mono">
+              <th class="py-4 px-4 text-center w-16">Место</th>
+              <th class="py-4 px-4">Миллиардер</th>
+              <th class="py-4 px-4 text-right">Капитал ($)</th>
+              <th class="py-4 px-4 hidden sm:table-cell">Главный актив</th>
+              <th class="py-4 px-4 hidden md:table-cell">Отрасль</th>
+              <th class="py-4 px-4 text-center">Статус</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-800/80 text-sm" id="tableBody">
+            <!-- Row 1: Alexey Zakharov -->
+            <tr class="bg-gold-500/5 hover:bg-gold-500/10 transition border-l-4 border-l-gold-500">
+              <td class="py-4 px-4 text-center font-bold font-forbes text-lg text-gold-400">#1</td>
+              <td class="py-4 px-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full overflow-hidden border border-gold-400 bg-zinc-900 shrink-0 relative flex items-center justify-center">
+                    <img 
+                      src="3170.png" 
+                      class="forbes-portrait w-full h-full object-cover object-top" 
+                      alt="Алексей Захаров"
+                      onerror="this.src='https://placehold.co/100x100/18181b/eab308?text=АЗ'"
+                    >
+                  </div>
+                  <div>
+                    <div class="font-bold text-white flex items-center gap-1.5">
+                      <span>Алексей Захаров</span>
+                      <span class="text-xs bg-gold-500/20 text-gold-400 px-1.5 py-0.5 rounded border border-gold-500/40">VIP</span>
+                    </div>
+                    <span class="text-xs text-zinc-400">Безоговорочный лидер рейтинга</span>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 text-right font-mono font-bold text-gold-400 text-base">$4,200,000,000</td>
+              <td class="py-4 px-4 hidden sm:table-cell text-zinc-300">Zakharov Capital, Фабрика 2.0</td>
+              <td class="py-4 px-4 hidden md:table-cell text-zinc-400">Инвестиции & High-Tech</td>
+              <td class="py-4 px-4 text-center"><span class="px-2 py-1 text-xs rounded-full bg-emerald-500/20 text-emerald-400">▲ На вершине</span></td>
+            </tr>
+
+            <!-- Row 2: Fictional Local Tycoons for hilarious flavor -->
+            <tr class="hover:bg-zinc-800/40 transition">
+              <td class="py-4 px-4 text-center font-bold font-forbes text-zinc-400">#2</td>
+              <td class="py-4 px-4 font-medium text-white">Виталий «Привокзальный»</td>
+              <td class="py-4 px-4 text-right font-mono font-bold text-zinc-200">$18,500,000</td>
+              <td class="py-4 px-4 hidden sm:table-cell text-zinc-300">Сеть премиальной шаурмы у станции</td>
+              <td class="py-4 px-4 hidden md:table-cell text-zinc-400">HoReCa & Фастфуд</td>
+              <td class="py-4 px-4 text-center"><span class="px-2 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400">▲ Растет</span></td>
+            </tr>
+
+            <tr class="hover:bg-zinc-800/40 transition">
+              <td class="py-4 px-4 text-center font-bold font-forbes text-zinc-400">#3</td>
+              <td class="py-4 px-4 font-medium text-white">Баба Клавдия Петровна</td>
+              <td class="py-4 px-4 text-right font-mono font-bold text-zinc-200">$9,200,000</td>
+              <td class="py-4 px-4 hidden sm:table-cell text-zinc-300">Агрохолдинг «Дрезненские сотки» (огурцы и малина)</td>
+              <td class="py-4 px-4 hidden md:table-cell text-zinc-400">Агросектор</td>
+              <td class="py-4 px-4 text-center"><span class="px-2 py-1 text-xs rounded-full bg-zinc-700/50 text-zinc-300">● Стабильно</span></td>
+            </tr>
+
+            <tr class="hover:bg-zinc-800/40 transition">
+              <td class="py-4 px-4 text-center font-bold font-forbes text-zinc-400">#4</td>
+              <td class="py-4 px-4 font-medium text-white">Дядя Толя «АвтоМастер»</td>
+              <td class="py-4 px-4 text-right font-mono font-bold text-zinc-200">$6,800,000</td>
+              <td class="py-4 px-4 hidden sm:table-cell text-zinc-300">Синдикат гаражных сервисов и сварки</td>
+              <td class="py-4 px-4 hidden md:table-cell text-zinc-400">Тяжелое машиностроение</td>
+              <td class="py-4 px-4 text-center"><span class="px-2 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400">▲ Растет</span></td>
+            </tr>
+
+            <tr class="hover:bg-zinc-800/40 transition">
+              <td class="py-4 px-4 text-center font-bold font-forbes text-zinc-400">#5</td>
+              <td class="py-4 px-4 font-medium text-white">Максим «Крипто-Кочегар»</td>
+              <td class="py-4 px-4 text-right font-mono font-bold text-zinc-200">$4,300,000</td>
+              <td class="py-4 px-4 hidden sm:table-cell text-zinc-300">Майнинг-ферма на базе местной котельной</td>
+              <td class="py-4 px-4 hidden md:table-cell text-zinc-400">Блокчейн & Энергетика</td>
+              <td class="py-4 px-4 text-center"><span class="px-2 py-1 text-xs rounded-full bg-rose-500/10 text-rose-400">▼ Волатильно</span></td>
+            </tr>
+
+            <tr class="hover:bg-zinc-800/40 transition">
+              <td class="py-4 px-4 text-center font-bold font-forbes text-zinc-400">#6</td>
+              <td class="py-4 px-4 font-medium text-white">Игорь «Экспресс-Велосипед»</td>
+              <td class="py-4 px-4 text-right font-mono font-bold text-zinc-200">$2,100,000</td>
+              <td class="py-4 px-4 hidden sm:table-cell text-zinc-300">Логистическая монополия доставки пирожков</td>
+              <td class="py-4 px-4 hidden md:table-cell text-zinc-400">Транспорт & Логистика</td>
+              <td class="py-4 px-4 text-center"><span class="px-2 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400">▲ Растет</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-14 p-6 sm:p-8 rounded-2xl bg-zinc-900/60 border border-zinc-800">
+      <div class="max-w-3xl mx-auto text-center">
+        <h3 class="font-serif text-2xl sm:text-3xl font-bold text-white mb-2">Калькулятор богатства Алексея Захарова</h3>
+        <p class="text-zinc-400 text-sm mb-6">
+          $4,200,000,000 — это гигантская сумма. Посмотрите, что можно приобрести на капитал первого номера Forbes Дрезна:
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+          <div class="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800">
+            <span class="text-2xl mb-1 block">🥙</span>
+            <div class="font-mono text-xl font-bold text-gold-400">1,560,000,000 шт.</div>
+            <p class="text-xs text-zinc-400 mt-1">Классической сочной шаурмы на станции Дрезна</p>
+          </div>
+          <div class="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800">
+            <span class="text-2xl mb-1 block">🚆</span>
+            <div class="font-mono text-xl font-bold text-gold-400">4,200 поездов</div>
+            <p class="text-xs text-zinc-400 mt-1">Новеньких скоростных составов «Иволга» для маршрута до Москвы</p>
+          </div>
+          <div class="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800">
+            <span class="text-2xl mb-1 block">🏙️</span>
+            <div class="font-mono text-xl font-bold text-gold-400">28 раз</div>
+            <p class="text-xs text-zinc-400 mt-1">Полностью выкупить и заново заасфальтировать весь город Дрезна</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="p-6 rounded-xl bg-zinc-900/40 border border-zinc-800 hover:border-gold-500/30 transition">
+        <span class="text-xs font-mono text-gold-500 uppercase tracking-widest block mb-2">Интервью с обложки</span>
+        <h4 class="font-serif text-lg font-bold text-white mb-2">«Как за один день завоевать первое место в Forbes Дрезна»</h4>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          Алексей Захаров делится секретами инвестиций: правильный галстук, уверенный взгляд и бейдж высшего доступа к ресурсам региона.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-xl bg-zinc-900/40 border border-zinc-800 hover:border-gold-500/30 transition">
+        <span class="text-xs font-mono text-gold-500 uppercase tracking-widest block mb-2">Аналитика рынка</span>
+        <h4 class="font-serif text-lg font-bold text-white mb-2">Дрезненская биржа: взлет фабричных индексов</h4>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          Капитализация местных предприятий обогнала индекс NASDAQ благодаря инвестициям частного фонда Zakharov Enterprises.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-xl bg-zinc-900/40 border border-zinc-800 hover:border-gold-500/30 transition">
+        <span class="text-xs font-mono text-gold-500 uppercase tracking-widest block mb-2">Слухи и инсайды</span>
+        <h4 class="font-serif text-lg font-bold text-white mb-2">В Дрезне планируют построить 90-этажный Захаров-Тауэр</h4>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          Проект нового делового центра с вертолетной площадкой для быстрых перелетов до Кремля уже проходит согласование.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <div id="dossierModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#121319] border border-gold-500/60 rounded-2xl max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl overflow-y-auto max-h-[90vh]">
+      <button onclick="closeDossierModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-gold-400 bg-zinc-900 shrink-0 relative flex items-center justify-center">
+          <img 
+            src="3170.png" 
+            class="forbes-portrait w-full h-full object-cover object-top" 
+            alt="Алексей Захаров"
+            onerror="this.src='https://placehold.co/150x150/18181b/eab308?text=АЗ'"
+          >
+        </div>
+        <div>
+          <span class="text-xs font-mono text-gold-400 uppercase tracking-widest">Личное дело №001</span>
+          <h3 class="font-serif text-2xl font-bold text-white">Алексей Захаров</h3>
+          <p class="text-xs text-zinc-400">Главный триллионер и визионер г. Дрезна</p>
+        </div>
+      </div>
+
+      <div class="space-y-4 text-sm text-zinc-300">
+        <div class="p-4 rounded-xl bg-zinc-900 border border-zinc-800">
+          <h5 class="text-xs font-bold text-gold-400 uppercase tracking-wider mb-1">Секрет успеха</h5>
+          <p class="text-xs leading-relaxed">
+            Строгий костюм, безупречный желто-синий брендированный ланьярд с бейджем неограниченного доступа, аналитический склад ума и умение видеть стартапы мирового уровня прямо посреди тихих улочек Дрезны.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-zinc-900 border border-zinc-800">
+          <h5 class="text-xs font-bold text-gold-400 uppercase tracking-wider mb-1">Биография в фактах</h5>
+          <ul class="text-xs space-y-1.5 list-disc list-inside text-zinc-400">
+            <li>Родился с врожденным чутьем на выгодные сделки.</li>
+            <li>Лично утвердил план модернизации исторической фабрики Дрезны в квантовый дата-центр.</li>
+            <li>Никогда не опаздывает на электричку: машинисты ждут взгляда Алексея перед отправлением.</li>
+            <li>Инвестировал в будущее города больше, чем весь областной бюджет за пятилетку.</li>
+          </ul>
+        </div>
+
+        <div class="flex justify-between items-center pt-2">
+          <span class="font-mono text-xs text-zinc-500">Верифицировано Forbes Editorial Board &copy; 2026</span>
+          <button onclick="closeDossierModal()" class="px-4 py-2 bg-gold-500 hover:bg-gold-400 text-black font-semibold text-xs rounded">
+            Закрыть досье
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="addModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#121319] border border-zinc-700 rounded-2xl max-w-md w-full p-6 relative shadow-2xl">
+      <button onclick="closeAddModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <h3 class="font-serif text-xl font-bold text-white mb-2">Номинировать в Forbes Дрезна</h3>
+      <p class="text-xs text-zinc-400 mb-4">Внесите имя местного жителя, достойного соседствовать с Алексеем Захаровым.</p>
+
+      <form id="addTycoonForm" onsubmit="handleAddTycoon(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs text-zinc-400 mb-1">Имя и фамилия кандидата</label>
+          <input type="text" id="newName" required placeholder="Например: Иван Дачный" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold-500">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-400 mb-1">Оценка капитала (в долларах)</label>
+          <input type="number" id="newNetWorth" required placeholder="Например: 5000000" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold-500">
+          <span class="text-[10px] text-zinc-500">*Никто не может превысить $4,200,000,000 Алексея Захарова!</span>
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-400 mb-1">Главный актив или бизнес в Дрезне</label>
+          <input type="text" id="newAsset" required placeholder="Например: Гараж на Южной, пасека" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold-500">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-400 mb-1">Сфера деятельности</label>
+          <input type="text" id="newIndustry" required placeholder="Например: Агротуризм, Ремонт" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold-500">
+        </div>
+
+        <button type="submit" class="w-full mt-4 py-2.5 bg-gold-500 hover:bg-gold-400 text-black font-bold text-xs uppercase tracking-wider rounded-lg transition">
+          Внести в официальный рейтинг
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-zinc-900 border border-gold-500 text-white px-5 py-3 rounded-xl shadow-2xl transform translate-y-24 opacity-0 transition-all duration-300 z-50 text-xs flex items-center gap-2">
+    <span class="text-gold-400">✨</span>
+    <span id="toastMessage">Сообщение</span>
+  </div>
+
+  <footer class="border-t border-zinc-800 bg-[#07080b] py-8 text-center text-xs text-zinc-500">
+    <div class="max-w-7xl mx-auto px-4 space-y-2">
+      <div class="font-forbes text-zinc-400 text-lg tracking-widest uppercase">FORBES &bull; DREZNA EDITION</div>
+      <p>&copy; 2026 Forbes Media LLC / Дрезненское региональное бюро. Все права защищены законом г. Дрезна.</p>
+      <p class="text-zinc-600 text-[11px]">
+        Все совпадения с реальными олигархами намеренны. На первом месте навсегда остаётся Алексей Захаров.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Modal management
+    function openDossierModal() {
+      document.getElementById('dossierModal').classList.remove('hidden');
+    }
+
+    function closeDossierModal() {
+      document.getElementById('dossierModal').classList.add('hidden');
+    }
+
+    function openAddModal() {
+      document.getElementById('addModal').classList.remove('hidden');
+    }
+
+    function closeAddModal() {
+      document.getElementById('addModal').classList.add('hidden');
+    }
+
+    // Share rating feature
+    function shareRating() {
+      const dummyUrl = window.location.href;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(dummyUrl).then(() => {
+          showToast('Ссылка на Forbes Дрезна скопирована в буфер обмена!');
+        }).catch(() => {
+          showToast('Рейтинг: №1 — Алексей Захаров ($4.2B)!');
+        });
+      } else {
+        showToast('Рейтинг: №1 — Алексей Захаров ($4.2B)!');
+      }
+    }
+
+    // Wealth calculation alert/message
+    function calculateZakharovWealth() {
+      showToast('Состояния Алексея Захарова ($4.2B) хватит, чтобы обеспечивать бесплатным кофе всех жителей Дрезны в течение 1200 лет!');
+    }
+
+    // Toast notifications
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const msg = document.getElementById('toastMessage');
+      msg.textContent = message;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 4200);
+    }
+
+    // Filtering table
+    function filterTable() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const rows = document.querySelectorAll('#tableBody tr');
+      
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        if (text.includes(query)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    // Adding a new tycoon to table dynamically (ensuring Alexey stays #1)
+    function handleAddTycoon(event) {
+      event.preventDefault();
+      const name = document.getElementById('newName').value.trim();
+      let netWorth = parseFloat(document.getElementById('newNetWorth').value) || 1000000;
+      const asset = document.getElementById('newAsset').value.trim();
+      const industry = document.getElementById('newIndustry').value.trim();
+
+      // Guardrail: Alexey is #1 with $4.2 Billion!
+      if (netWorth >= 4200000000) {
+        netWorth = 4199999999;
+        showToast('Попытка превзойти Алексея Захарова скорректирована налоговой службой Дрезны!');
+      }
+
+      const tableBody = document.getElementById('tableBody');
+      const currentRowsCount = tableBody.querySelectorAll('tr').length;
+      const newRank = currentRowsCount + 1;
+
+      const formattedWorth = '$' + Number(netWorth).toLocaleString('en-US');
+
+      const newRow = document.createElement('tr');
+      newRow.className = 'hover:bg-zinc-800/40 transition animate-fade-in';
+      newRow.innerHTML = `
+        <td class="py-4 px-4 text-center font-bold font-forbes text-zinc-400">#${newRank}</td>
+        <td class="py-4 px-4 font-medium text-white">${escapeHtml(name)}</td>
+        <td class="py-4 px-4 text-right font-mono font-bold text-zinc-200">${formattedWorth}</td>
+        <td class="py-4 px-4 hidden sm:table-cell text-zinc-300">${escapeHtml(asset)}</td>
+        <td class="py-4 px-4 hidden md:table-cell text-zinc-400">${escapeHtml(industry)}</td>
+        <td class="py-4 px-4 text-center"><span class="px-2 py-1 text-xs rounded-full bg-blue-500/10 text-blue-400">Новичок</span></td>
+      `;
+
+      tableBody.appendChild(newRow);
+      closeAddModal();
+      document.getElementById('addTycoonForm').reset();
+      showToast(`${name} успешно добавлен в список Forbes Дрезна!`);
+    }
+
+    function escapeHtml(string) {
+      const div = document.createElement('div');
+      div.innerText = string;
+      return div.innerHTML;
+    }
+
+    // Triggered if 3170.png is not found yet in the current environment
+    function handleImageError(imgElement) {
+      imgElement.classList.add('hidden');
+      const placeholder = document.getElementById('photoPlaceholder');
+      if (placeholder) {
+        placeholder.classList.remove('hidden');
+        placeholder.classList.add('flex');
+      }
+    }
+
+    // Allows instant local preview/testing if opened directly without a web server
+    function previewUploadedFile(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const allPortraits = document.querySelectorAll('.forbes-portrait');
+          allPortraits.forEach(img => {
+            img.src = e.target.result;
+            img.classList.remove('hidden');
+          });
+          const placeholder = document.getElementById('photoPlaceholder');
+          if (placeholder) {
+            placeholder.classList.add('hidden');
+            placeholder.classList.remove('flex');
+          }
+          showToast('Фото 3170.png успешно применено!');
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // Close modals on clicking outside
+    window.addEventListener('click', function(e) {
+      const dossierModal = document.getElementById('dossierModal');
+      const addModal = document.getElementById('addModal');
+      if (e.target === dossierModal) closeDossierModal();
+      if (e.target === addModal) closeAddModal();
+    });
+  </script>
+</body>
+</html>
